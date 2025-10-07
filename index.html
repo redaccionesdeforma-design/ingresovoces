@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descubre tu Liderazgo Territorial | Voces que Salvan</title>
+    <title>Encuentra tu Insignia de Liderazgo | Voces que Salvan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,6 +45,68 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        
+        /* Badge Gradients */
+        .badge-gradient-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+        .badge-gradient-teal { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
+        .badge-gradient-amber { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .badge-gradient-purple { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+
+        /* Flashcard Styles */
+        .flashcard {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .flashcard:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .flashcard .description {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, margin-top 0.5s ease-in-out;
+        }
+        .flashcard:hover .description {
+            max-height: 200px; /* Adjust as needed */
+            margin-top: 0.75rem;
+        }
+        
+        /* Flip Card Styles */
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 350px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.is-flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 1rem; /* rounded-xl */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background-color: white;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
@@ -54,13 +116,25 @@
         <!-- Pantalla de Inicio -->
         <div id="start-screen" class="p-6 md:p-8 text-center card-enter-active">
             <img src="https://i.imgur.com/ju3sYXD.jpg" alt="Imagen de personas diversas trabajando juntas en una comunidad" class="w-full h-48 object-cover rounded-xl mb-6 shadow-md">
-            <h1 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight">¡5 Retos para tu Liderazgo!</h1>
-            <p class="mt-4 text-gray-600">Tu voz puede salvar vidas. ¿Sabes cómo resuena en tu comunidad? Estás a punto de descubrirlo.</p>
-            <p class="mt-2 font-semibold text-gray-700">Supera 5 pequeños retos y revela el estilo de liderazgo que te hace única o único.</p>
-            <button id="start-button" class="mt-8 w-full bg-ansv-orange hover:bg-ansv-orange-dark text-white font-bold py-4 px-6 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-lg">
-                ¡Aceptar el Desafío!
+            <h1 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight">¡Encuentra tu Insignia de Liderazgo!</h1>
+            <p class="mt-4 text-gray-600">Tu voz tiene un poder único. Detrás de 5 retos, descubrirás la insignia que representa tu forma de transformar el mundo.</p>
+            <button id="explore-button" class="mt-8 w-full bg-ansv-orange hover:bg-ansv-orange-dark text-white font-bold py-4 px-6 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-lg">
+                ¡Comenzar la Misión!
             </button>
         </div>
+
+        <!-- Pantalla de Flashcards -->
+        <div id="flashcard-screen" class="hidden p-6 md:p-8 card-enter-active">
+            <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800">¿Conoces tu Liderazgo?</h2>
+            <p class="text-center text-gray-600 mt-2 mb-6">Cada liderazgo tiene un súper poder. Explóralos y luego descrubre el tuyo.</p>
+            <div id="flashcard-container" class="grid grid-cols-2 gap-4">
+                <!-- Flashcards se generan con JS -->
+            </div>
+            <button id="start-quiz-button" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-lg">
+                ¡Descubrir mi Insignia!
+            </button>
+        </div>
+
 
         <!-- Pantalla del Quiz -->
         <div id="quiz-screen" class="hidden p-6 md:p-8">
@@ -87,9 +161,14 @@
 
     <script>
         const startScreen = document.getElementById('start-screen');
+        const flashcardScreen = document.getElementById('flashcard-screen');
         const quizScreen = document.getElementById('quiz-screen');
         const resultsScreen = document.getElementById('results-screen');
-        const startButton = document.getElementById('start-button');
+        
+        const exploreButton = document.getElementById('explore-button');
+        const startQuizButton = document.getElementById('start-quiz-button');
+        const flashcardContainer = document.getElementById('flashcard-container');
+
         const questionText = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
         const progressBar = document.getElementById('progress-bar');
@@ -103,7 +182,7 @@
             impulsora: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
             creativa: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5C17.7 10.2 18 9 18 7.5a6 6 0 0 0-12 0c0 1.5.3 2.7 1.5 3.9.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`
         };
-
+        
         const questions = [
             { question: "En tu barrio hay un cruce peligroso. ¿Qué es lo primero que haces?", options: [ { text: "Investigo datos sobre siniestros para presentar una propuesta formal.", type: "estratega" }, { text: "Organizo una reunión con el vecindario para escuchar ideas y unir fuerzas.", type: "conectora" }, { text: "Propongo una acción inmediata, como pintar una cebra peatonal temporal.", type: "impulsora" }, { text: "Diseño una campaña creativa en redes para visibilizar el riesgo y educar.", type: "creativa" } ] },
             { question: "Anuncian una ciclorruta, pero excluye a una parte de la comunidad. ¿Tu reacción?", options: [ { text: "Analizo el plan técnico y la normativa para sustentar una contrapropuesta.", type: "estratega" }, { text: "Convoco a las personas excluidas para que sus voces sean escuchadas.", type: "conectora" }, { text: "Organizo un recorrido en bici por la zona para demostrar la necesidad real.", type: "impulsora" }, { text: "Creo un mapa interactivo para que la gente señale sus rutas deseadas.", type: "creativa" } ] },
@@ -113,10 +192,10 @@
         ];
 
         const resultsData = {
-            estratega: { title: "Tu liderazgo es: La Mente Estratega", icon: icons.estratega, description: "Analizas, planificas y argumentas con datos. Tu súper poder es transformar problemas complejos en planes de acción sólidos y convincentes. No dejas nada al azar y tu rigurosidad inspira confianza.", potenciar: [ "Traduce los datos en historias que conecten emocionalmente.", "Confía en la intuición de la comunidad para complementar tus análisis.", "Crea alianzas con otros tipos de liderazgos para llevar tus planes a la acción." ], color: "indigo" },
-            conectora: { title: "Tu liderazgo es: La Voz Conectora", icon: icons.conectora, description: "Eres el puente que une personas, ideas y voluntades. Tu fortaleza es la empatía, la escucha y la capacidad de crear redes de colaboración. Construyes comunidad y te aseguras de que nadie se quede atrás.", potenciar: [ "Define objetivos claros para que la energía del grupo no se disperse.", "Busca datos y argumentos técnicos que respalden las voces de la comunidad.", "Delega tareas para que la colaboración sea aún más fuerte y efectiva." ], color: "teal" },
-            impulsora: { title: "Tu liderazgo es: La Fuerza Impulsora", icon: icons.impulsora, description: "¡Manos a la obra! Eres una persona de acción, práctica y resolutiva. Te mueves con rapidez para implementar soluciones visibles y generar cambios tangibles. Tu energía moviliza y demuestra que el cambio es posible aquí y ahora.", potenciar: [ "Toma pausas para planificar y asegurar que la acción sea sostenible a largo plazo.", "Escucha activamente a la comunidad para que tus soluciones respondan a sus necesidades reales.", "Comunica tus logros para inspirar a más personas a sumarse al cambio." ], color: "amber" },
-            creativa: { title: "Tu liderazgo es: La Semilla Creativa", icon: icons.creativa, description: "Ves el mundo desde ángulos inesperados. Tu mente innova, comunica de formas diferentes y encuentra soluciones donde nadie más las ve. Eres especialista en romper moldes para educar, sensibilizar e inspirar.", potenciar: [ "Busca alianzas con perfiles más estructurados para dar viabilidad a tus ideas.", "Asegúrate de que tus propuestas creativas sean inclusivas y fáciles de entender.", "No temas fallar. Cada experimento es un aprendizaje valioso." ], color: "purple" }
+            estratega: { title: "MENTE ESTRATEGA", subtitle: "El Poder de la Evidencia", flashcard_desc: "Analiza, planifica y argumenta con datos para crear soluciones sólidas.", description: "Tú conviertes datos en acciones que salvan vidas. Tu visión clara es la que construye caminos seguros para todas y todos.", potenciar: [ "Traduce los datos en historias que conecten emocionalmente.", "Confía en la intuición de la comunidad para complementar tus análisis.", "Crea alianzas con otros tipos de liderazgos para llevar tus planes a la acción." ], color: "indigo", icon: icons.estratega },
+            conectora: { title: "VOZ CONECTORA", subtitle: "El Poder de la Unión", flashcard_desc: "Crea puentes, une personas y construye comunidad a través de la empatía.", description: "Tú tejes redes de confianza y empatía. Tu increíble capacidad para unir a la comunidad es la fuerza que transforma el territorio.", potenciar: [ "Define objetivos claros para que la energía del grupo no se disperse.", "Busca datos y argumentos técnicos que respalden las voces de la comunidad.", "Delega tareas para que la colaboración sea aún más fuerte y efectiva." ], color: "teal", icon: icons.conectora },
+            impulsora: { title: "FUERZA IMPULSORA", subtitle: "El Poder de la Acción", flashcard_desc: "Pasa a la acción con soluciones prácticas que generan cambios tangibles y rápidos.", description: "Tu energía inagotable convierte las ideas en cambios reales y visibles. Tú demuestras que la transformación es posible, aquí y ahora.", potenciar: [ "Toma pausas para planificar y asegurar que la acción sea sostenible a largo plazo.", "Escucha activamente a la comunidad para que tus soluciones respondan a sus necesidades reales.", "Comunica tus logros para inspirar a más personas a sumarse al cambio." ], color: "amber", icon: icons.impulsora },
+            creativa: { title: "SEMILLA CREATIVA", subtitle: "El Poder de la Innovación", flashcard_desc: "Imagina soluciones que nadie más ve y comunica de formas que inspiran y movilizan.", description: "Tú imaginas soluciones que nadie más ve. Tu genialidad para inspirar y comunicar de formas nuevas es la que abre mentes y salva vidas.", potenciar: [ "Busca alianzas con perfiles más estructurados para dar viabilidad a tus ideas.", "Asegúrate de que tus propuestas creativas sean inclusivas y fáciles de entender.", "No temas fallar. Cada experimento es un aprendizaje valioso." ], color: "purple", icon: icons.creativa }
         };
 
         const diplomaBenefits = [
@@ -130,10 +209,36 @@
         let currentQuestionIndex = 0;
         let scores = { estratega: 0, conectora: 0, impulsora: 0, creativa: 0 };
 
-        startButton.addEventListener('click', startQuiz);
+        function init() {
+            exploreButton.addEventListener('click', showFlashcards);
+            startQuizButton.addEventListener('click', startQuiz);
+            buildFlashcards();
+        }
+
+        function buildFlashcards() {
+            flashcardContainer.innerHTML = '';
+            for(const type in resultsData) {
+                const data = resultsData[type];
+                const card = document.createElement('div');
+                card.classList.add('flashcard', 'p-4', 'rounded-xl', 'text-center', 'cursor-pointer', 'border-2', 'bg-white');
+                card.innerHTML = `
+                    <div class="w-10 h-10 mx-auto ${data.color === 'amber' ? 'text-amber-500' : `text-${data.color}-600`}">${data.icon}</div>
+                    <h3 class="font-bold mt-2 text-sm text-gray-800">${data.title}</h3>
+                    <div class="description text-xs text-gray-500">
+                        ${data.flashcard_desc}
+                    </div>
+                `;
+                flashcardContainer.appendChild(card);
+            }
+        }
+
+        function showFlashcards() {
+            startScreen.classList.add('hidden');
+            flashcardScreen.classList.remove('hidden');
+        }
 
         function startQuiz() {
-            startScreen.classList.add('hidden');
+            flashcardScreen.classList.add('hidden');
             quizScreen.classList.remove('hidden');
             quizScreen.classList.add('card-enter-active');
             showQuestion();
@@ -141,7 +246,6 @@
 
         function showQuestion() {
             optionsContainer.innerHTML = '';
-            
             const qContainer = document.getElementById('question-container');
             qContainer.classList.remove('card-enter-active');
             void qContainer.offsetWidth;
@@ -181,7 +285,6 @@
 
         function showResults() {
             quizScreen.classList.add('hidden');
-            
             let maxScore = -1;
             let resultType = '';
             for (const type in scores) {
@@ -194,53 +297,69 @@
             const result = resultsData[resultType];
             
             const colorClasses = {
-                indigo: { text: 'text-indigo-600' },
-                teal: { text: 'text-teal-600' },
-                amber: { text: 'text-amber-500' },
-                purple: { text: 'text-purple-600' }
+                indigo: { gradient: 'badge-gradient-indigo', text: 'text-indigo-200', lightText: 'text-indigo-100' },
+                teal: { gradient: 'badge-gradient-teal', text: 'text-teal-200', lightText: 'text-teal-100' },
+                amber: { gradient: 'badge-gradient-amber', text: 'text-amber-200', lightText: 'text-amber-100' },
+                purple: { gradient: 'badge-gradient-purple', text: 'text-purple-200', lightText: 'text-purple-100' }
             };
 
             const colors = colorClasses[result.color];
 
             resultsScreen.innerHTML = `
                 <div class="p-6 md:p-8">
-                    <div class="text-center card-enter-active">
-                        <div class="flex justify-center items-center mb-4 ${colors.text}">
-                            <div class="w-16 h-16">${result.icon}</div>
-                        </div>
-                        <h2 class="text-3xl font-black ${colors.text}">${result.title}</h2>
-                        <p class="mt-4 text-gray-600 text-lg">${result.description}</p>
+                    <div class="text-center mb-6 card-enter-active">
+                        <p class="font-bold text-gray-500">¡MISIÓN CUMPLIDA! TU INSIGNIA ES:</p>
                     </div>
                     
-                    <div class="mt-8 text-left result-item-enter" style="--delay: 0.2s;">
-                        <h3 class="font-bold text-lg mb-3 flex items-center"><span class="text-2xl mr-2">💡</span> Cómo potenciar tu liderazgo:</h3>
-                        <ul class="space-y-2 text-gray-600">
-                            ${result.potenciar.map(item => `<li class="flex"><svg class="w-5 h-5 mr-2 mt-1 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${item}</span></li>`).join('')}
-                        </ul>
+                    <!-- Insignia Flip Card -->
+                    <div id="insignia-card" class="flip-card result-item-enter" style="--delay: 0.1s;">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front text-white ${colors.gradient}">
+                                <div class="w-24 h-24 mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                                    <div class="w-14 h-14">${result.icon}</div>
+                                </div>
+                                <h2 class="text-2xl font-bold tracking-tight">${result.title}</h2>
+                                <span class="mt-1 font-semibold ${colors.text}">${result.subtitle}</span>
+                                <div class="absolute bottom-4 text-xs font-bold opacity-70 animate-pulse">Toca para revelar tu poder</div>
+                            </div>
+                            <div class="flip-card-back">
+                                <p class="text-gray-700 font-semibold px-4">${result.description}</p>
+                                <hr class="my-4 w-1/2 border-gray-200">
+                                <h3 class="font-bold text-sm mb-2 text-gray-800">Cómo potenciarte:</h3>
+                                <ul class="space-y-1 text-gray-600 text-xs text-left px-4">
+                                    ${result.potenciar.map(item => `<li class="flex"><svg class="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${item}</span></li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mt-8 bg-indigo-50 p-6 rounded-2xl border border-indigo-200 result-item-enter" style="--delay: 0.4s;">
+                    <div class="mt-8 bg-indigo-50 p-6 rounded-xl border border-indigo-200 result-item-enter" style="--delay: 0.3s;">
                         <h3 class="font-black text-xl mb-4 text-center result-title-gradient">✨ Desbloquea tu Poder en el Diplomado ✨</h3>
                         <ul class="space-y-3 text-gray-700">
                             ${diplomaBenefits.map(item => `<li class="flex items-start"><svg class="w-6 h-6 mr-2 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zM12 14a4 4 0 100-8 4 4 0 000 8zm-2 0a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg><span>${item}</span></li>`).join('')}
                         </ul>
                     </div>
                     
-                    <div class="mt-8 text-center bg-white p-6 rounded-2xl result-item-enter" style="--delay: 0.6s;">
+                    <div class="mt-8 text-center bg-white p-6 rounded-xl result-item-enter" style="--delay: 0.5s;">
                         <p class="text-xl font-bold text-gray-800">Tu liderazgo es justo lo que tu territorio necesita.</p>
                         <p class="mt-2 text-gray-600">Ya diste el primer paso al inscribirte, ¡ahora da el siguiente! Tienes hasta <strong>noviembre</strong> para completar este viaje a tu propio ritmo.</p>
                         <a href="${diplomaLink}" target="_blank" class="mt-6 w-full inline-block bg-ansv-orange hover:bg-ansv-orange-dark text-white font-black py-4 px-6 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-lg">
-                            ¡TRANSFORMAR MI TERRITORIO AHORA!
+                            ¡POTENCIAR MI LIDERAZGO AHORA!
                         </a>
                     </div>
                 </div>
             `;
             resultsScreen.classList.remove('hidden');
+
+            const insigniaCard = document.getElementById('insignia-card');
+            if(insigniaCard) {
+                insigniaCard.addEventListener('click', () => {
+                    insigniaCard.classList.toggle('is-flipped');
+                });
+            }
         }
 
+        init();
     </script>
 </body>
 </html>
-
-
-
