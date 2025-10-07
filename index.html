@@ -1,365 +1,404 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuentra tu Insignia de Liderazgo | Voces que Salvan</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
-        }
-        .ansv-orange { color: #F37021; }
-        .bg-ansv-orange { background-color: #F37021; }
-        .hover\:bg-ansv-orange-dark:hover { background-color: #D85C1B; }
-        .gradient-bg {
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Descubre tu Liderazgo Territorial | Voces que Salvan</title>
+  <meta name="description" content="Mini‑juego inclusivo para descubrir tu estilo de liderazgo territorial en el diplomado Voces que Salvan." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      /* Paleta institucional ANSV */
+      --ansv-orange:#F37021; /* botón principal */
+      --ansv-orange-dark:#D85C1B; /* hover */
+      --ansv-gray-ink:#2b2b2b; /* texto fuerte */
+    }
+    html,body{font-family:'Inter',system-ui,Segoe UI,Roboto,Arial, sans-serif; background:#f7f8fa}
+    .bg-ansv{background:var(--ansv-orange)}
+    .bg-ansv-dark{background:var(--ansv-orange-dark)}
+    .text-ansv{color:var(--ansv-orange)}
+    .ring-ansv{--tw-ring-color:var(--ansv-orange)}
+    /* Animaciones accesibles */
+    @keyframes card{from{opacity:0;transform:translateY(12px) scale(.98)} to{opacity:1;transform:none}}
+    .anim{animation:card .5s ease-out both}
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none!important;transition:none!important}
+    }
+    /* Alto contraste para foco */
+    :focus-visible{outline:3px solid var(--ansv-orange); outline-offset:2px}
 
-        .card-enter-active, .result-item-enter {
-            animation: card-enter 0.6s ease-out forwards;
-        }
-        
-        .result-item-enter {
-            opacity: 0;
-            animation-delay: var(--delay, 0s);
-        }
+    /* Flashcard Styles */
+    .flashcard .description {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+    }
+    .flashcard.is-open .description {
+      max-height: 150px; /* Adjust as needed */
+    }
+    .flashcard .plus-icon {
+        transition: transform 0.3s ease;
+    }
+    .flashcard.is-open .plus-icon {
+        transform: rotate(45deg);
+    }
 
-        @keyframes card-enter {
-            from {
-                opacity: 0;
-                transform: translateY(25px) scale(0.98);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        
-        .result-title-gradient {
-            background: linear-gradient(90deg, #4f46e5, #c026d3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        /* Badge Gradients */
-        .badge-gradient-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
-        .badge-gradient-teal { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
-        .badge-gradient-amber { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
-        .badge-gradient-purple { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
 
-        /* Flashcard Styles */
-        .flashcard {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .flashcard:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-        }
-        .flashcard .description {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out, margin-top 0.5s ease-in-out;
-        }
-        .flashcard:hover .description {
-            max-height: 200px; /* Adjust as needed */
-            margin-top: 0.75rem;
-        }
-        
-        /* Flip Card Styles */
-        .flip-card {
-            background-color: transparent;
-            width: 100%;
-            height: 350px;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-        }
-        .flip-card.is-flipped .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden; /* Safari */
-            backface-visibility: hidden;
-            border-radius: 1rem; /* rounded-xl */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-        }
-        .flip-card-back {
-            transform: rotateY(180deg);
-            background-color: white;
-        }
-    </style>
+    /* Flip Card Styles */
+    .flip-card {
+        background-color: transparent;
+        width: 100%;
+        max-width: 400px; /* Max width for the card */
+        height: 350px; 
+        perspective: 1500px;
+        cursor: pointer;
+    }
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.7s;
+        transform-style: preserve-3d;
+    }
+    .flip-card.is-flipped .flip-card-inner {
+        transform: rotateY(180deg);
+    }
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 1.5rem; /* rounded-3xl */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 1.5rem;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+    }
+    .flip-card-back {
+        transform: rotateY(180deg);
+        background-color: white;
+    }
+    .badge-gradient-indigo { background: linear-gradient(135deg, #6366f1, #4f46e5); }
+    .badge-gradient-teal { background: linear-gradient(135deg, #2dd4bf, #14b8a6); }
+    .badge-gradient-amber { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+    .badge-gradient-purple { background: linear-gradient(135deg, #a78bfa, #8b5cf6); }
+  </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body class="h-full flex items-center justify-center p-4">
+  <main id="app" class="w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden" aria-labelledby="app-title">
 
-    <div id="app" class="w-full max-w-lg mx-auto gradient-bg rounded-2xl shadow-2xl overflow-hidden relative">
-        
-        <!-- Pantalla de Inicio -->
-        <div id="start-screen" class="p-6 md:p-8 text-center card-enter-active">
-            <img src="https://i.imgur.com/ju3sYXD.jpg" alt="Imagen de personas diversas trabajando juntas en una comunidad" class="w-full h-48 object-cover rounded-xl mb-6 shadow-md">
-            <h1 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight">¡Encuentra tu Insignia de Liderazgo!</h1>
-            <p class="mt-4 text-gray-600">Tu voz tiene un poder único. Detrás de 5 retos, descubrirás la insignia que representa tu forma de transformar el mundo.</p>
-            <button id="explore-button" class="mt-8 w-full bg-ansv-orange hover:bg-ansv-orange-dark text-white font-bold py-4 px-6 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-lg">
-                ¡Comenzar la Misión!
-            </button>
+    <!-- Encabezado accesible -->
+    <header class="px-6 sm:px-8 py-5 border-b border-gray-100 flex items-center justify-between" role="banner">
+      <h1 id="app-title" class="text-xl sm:text-2xl font-extrabold text-gray-900">Descubre tu liderazgo territorial</h1>
+      <span class="sr-only">Diplomado Voces que Salvan</span>
+    </header>
+
+    <!-- Pantalla de inicio -->
+    <section id="start-screen" class="p-6 sm:p-8 anim" role="region" aria-labelledby="start-title">
+      <figure class="rounded-xl overflow-hidden shadow mb-6">
+        <img src="https://i.imgur.com/ju3sYXD.jpeg" alt="Grupo diverso de personas sonriendo y colaborando en un entorno urbano" class="w-full h-56 sm:h-64 object-cover" loading="eager" />
+      </figure>
+      <h2 id="start-title" class="text-3xl sm:text-4xl font-black leading-tight text-gray-900">¡Encuentra tu Insignia de Liderazgo!</h2>
+      <p class="mt-4 text-gray-700">Tu voz tiene un poder único. ¿Sabes cuál es el tuyo?</p>
+      <p class="mt-2 font-semibold text-gray-700">Primero explora los súper poderes de liderazgo y luego completa 5 retos para descubrir tu insignia personal.</p>
+      <button id="explore-button" class="mt-8 w-full bg-ansv hover:bg-ansv-dark text-white font-black py-4 px-6 rounded-xl text-lg transition-transform active:scale-[.99] focus-visible:shadow-[0_0_0_4px_rgba(243,112,33,.25)]">
+        Explorar los súper poderes
+      </button>
+    </section>
+
+    <!-- Pantalla de Flashcards -->
+    <section id="flashcard-screen" class="hidden p-6 sm:p-8" role="region" aria-labelledby="flashcard-title">
+        <h2 id="flashcard-title" class="text-2xl sm:text-3xl font-black text-center text-gray-900">Los 4 Súper Poderes del Liderazgo</h2>
+        <p class="text-center text-gray-600 mt-2 mb-8">Estos son los estilos que transforman territorios. Haz clic en cada uno para saber más.</p>
+        <div id="flashcard-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <!-- Flashcards generadas por JS -->
         </div>
+        <button id="start-quiz-button" class="mt-10 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 px-6 rounded-xl text-lg transition-transform active:scale-[.99]">
+            ¡Ahora, a descubrir mi insignia!
+        </button>
+    </section>
 
-        <!-- Pantalla de Flashcards -->
-        <div id="flashcard-screen" class="hidden p-6 md:p-8 card-enter-active">
-            <h2 class="text-2xl md:text-3xl font-black text-center text-gray-800">¿Conoces tu Liderazgo?</h2>
-            <p class="text-center text-gray-600 mt-2 mb-6">Cada liderazgo tiene un súper poder. Explóralos y luego descrubre el tuyo.</p>
-            <div id="flashcard-container" class="grid grid-cols-2 gap-4">
-                <!-- Flashcards se generan con JS -->
-            </div>
-            <button id="start-quiz-button" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-lg">
-                ¡Descubrir mi Insignia!
-            </button>
+    <!-- Pantalla del quiz -->
+    <section id="quiz-screen" class="hidden p-6 sm:p-8" role="region" aria-live="polite" aria-atomic="true">
+      <div class="mb-6" aria-hidden="true">
+        <p id="challenge-counter" class="text-center font-bold text-ansv mb-2"></p>
+        <div class="bg-gray-200 rounded-full h-2.5" aria-hidden="true">
+          <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width:0%"></div>
         </div>
+      </div>
+      <div id="question-container" class="anim">
+        <h3 id="question-text" class="text-2xl font-extrabold mb-6 text-center text-gray-900"></h3>
+        <div id="options-container" class="grid grid-cols-1 gap-4" role="listbox" aria-label="Opciones de respuesta">
+          <!-- Botones generados por JS -->
+        </div>
+      </div>
+    </section>
 
+    <!-- Pantalla de resultados -->
+    <section id="results-screen" class="hidden" role="region" aria-live="polite" aria-atomic="true">
+      <!-- Se inyecta desde JS -->
+    </section>
+  </main>
 
-        <!-- Pantalla del Quiz -->
-        <div id="quiz-screen" class="hidden p-6 md:p-8">
-            <div class="mb-6">
-                <p id="challenge-counter" class="text-center font-bold ansv-orange mb-2"></p>
-                <div class="bg-gray-200 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+  <script>
+    const $ = (s)=>document.querySelector(s);
+    const startScreen = $('#start-screen');
+    const flashcardScreen = $('#flashcard-screen');
+    const quizScreen = $('#quiz-screen');
+    const resultsScreen = $('#results-screen');
+    const exploreButton = $('#explore-button');
+    const startQuizButton = $('#start-quiz-button');
+    const flashcardContainer = $('#flashcard-container');
+    const questionText = $('#question-text');
+    const optionsContainer = $('#options-container');
+    const progressBar = $('#progress-bar');
+    const challengeCounter = $('#challenge-counter');
+
+    const diplomaLink = 'https://redipi.q10.com/';
+
+    // SVG (trazos simples para buena perf.)
+    const icons = {
+      estratega: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>',
+      conectora: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      impulsora: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      creativa: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5C17.7 10.2 18 9 18 7.5a6 6 0 0 0-12 0c0 1.5.3 2.7 1.5 3.9.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>'
+    };
+
+    const questions = [
+      { q:'En tu barrio hay un cruce peligroso. ¿Qué es lo primero que haces?', a:[
+        { t:'Investigo datos sobre siniestros para presentar una propuesta formal.', k:'estratega' },
+        { t:'Organizo un encuentro con el vecindario para escuchar ideas y unir fuerzas.', k:'conectora' },
+        { t:"Propongo una acción inmediata, como pintar una cebra peatonal temporal.", k:'impulsora' },
+        { t:'Diseño una campaña creativa en redes para visibilizar el riesgo y educar.', k:'creativa' }
+      ]},
+      { q:'Anuncian una ciclorruta, pero excluye a parte de la comunidad. ¿Tu reacción?', a:[
+        { t:'Analizo el plan técnico y la normativa para sustentar una contrapropuesta.', k:'estratega' },
+        { t:'Convoco a las personas excluidas para que sus voces sean escuchadas.', k:'conectora' },
+        { t:'Organizo un recorrido en bici por la zona para demostrar la necesidad real.', k:'impulsora' },
+        { t:'Creo un mapa interactivo para que la gente señale sus rutas deseadas.', k:'creativa' }
+      ]},
+      { q:'Necesitas convencer a la junta local de invertir en seguridad vial para la niñez. ¿Tu argumento principal?', a:[
+        { t:'Un informe con estadísticas de riesgo y retorno social de la inversión.', k:'estratega' },
+        { t:'Testimonios de familias y docentes sobre la preocupación comunitaria.', k:'conectora' },
+        { t:'Un plan de acción concreto y de bajo costo para implementar en semanas.', k:'impulsora' },
+        { t:'Una presentación visual desde la mirada de la niñez.', k:'creativa' }
+      ]},
+      { q:'RETO DE ESTRATEGIA: Tienes una semana y un equipo pequeño para una campaña de impacto rápido. ¿Qué priorizas?', a:[
+        { t:'Sondeo exprés para detectar el punto de mayor riesgo y enfocar el esfuerzo.', k:'estratega' },
+        { t:"Un 'café con la comunidad' para presentar el problema y sumar más personas.", k:'conectora' },
+        { t:"Lanzar una intervención táctica inmediata, como una 'cebratón'.", k:'impulsora' },
+        { t:'Crear un video corto y potente para redes que genere conciencia masiva.', k:'creativa' }
+      ]},
+      { q:'Un grupo de jóvenes usa una zona peatonal para acrobacias en bici, generando tensión con personas mayores. ¿Cómo lo abordas?', a:[
+        { t:'Propongo horarios de uso diferenciados según flujos peatonales.', k:'estratega' },
+        { t:'Modero un diálogo entre ambos grupos para que acuerden una solución.', k:'conectora' },
+        { t:"Coorganizo con las juventudes un evento de 'stunt' seguro en un parque.", k:'impulsora' },
+        { t:'Diseño señalización urbana amigable que invite a la convivencia.', k:'creativa' }
+      ]}
+    ];
+
+    const profiles = {
+      estratega:{
+        title:'La Mente Estratega',
+        desc:'Analizas, planificas y argumentas con datos. Tu súper poder es convertir problemas complejos en planes sólidos que inspiran confianza.',
+        tips:[
+          'Traduce los datos en historias que conecten emocionalmente.',
+          'Equilibra rigor técnico con intuición comunitaria.',
+          'Haz equipo con otros perfiles para acelerar la ejecución.'
+        ], color:'indigo'
+      },
+      conectora:{
+        title:'La Voz Conectora',
+        desc:'Eres el puente entre personas, ideas y voluntades. Tu fortaleza es la empatía, la escucha y la colaboración.',
+        tips:[
+          'Define objetivos claros para enfocar la energía del grupo.',
+          'Sustenta las voces con datos y normativa.',
+          'Distribuye tareas para multiplicar resultados.'
+        ], color:'teal'
+      },
+      impulsora:{
+        title:'La Fuerza Impulsora',
+        desc:'Manos a la obra. Actúas con rapidez para generar cambios visibles y tangibles. Tu energía demuestra que el cambio es posible hoy.',
+        tips:[
+          'Planifica pausas para asegurar sostenibilidad.',
+          'Escucha activa para alinear acción con necesidades reales.',
+          'Comunica logros para inspirar adhesión.'
+        ], color:'amber'
+      },
+      creativa:{
+        title:'La Semilla Creativa',
+        desc:'Ves ángulos inesperados. Innovas, comunicas distinto y encuentras soluciones donde nadie más las ve.',
+        tips:[
+          'Alíate con perfiles estructurados para viabilidad.',
+          'Asegura lenguaje claro e inclusivo en tus propuestas.',
+          'Abraza el ensayo‑error como motor de aprendizaje.'
+        ], color:'purple'
+      }
+    };
+
+    let idx=0;
+    let score = { estratega:0, conectora:0, impulsora:0, creativa:0 };
+
+    function init() {
+        exploreButton.addEventListener('click', showFlashcards);
+        startQuizButton.addEventListener('click', startQuiz);
+        buildFlashcards();
+    }
+
+    function buildFlashcards() {
+        flashcardContainer.innerHTML = '';
+        Object.entries(profiles).forEach(([key, profile]) => {
+            const card = document.createElement('button');
+            card.type = 'button';
+            const palette = {
+                indigo:'text-indigo-600 bg-indigo-50 border-indigo-200',
+                teal:'text-teal-600 bg-teal-50 border-teal-200',
+                amber:'text-amber-600 bg-amber-50 border-amber-200',
+                purple:'text-purple-600 bg-purple-50 border-purple-200'
+            }[profile.color];
+            
+            card.className = `flashcard p-6 rounded-2xl text-left border-2 transition-all ${palette.split(' ')[2]}`;
+            card.innerHTML = `
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="${palette.split(' ')[0]}">${icons[key].replace('w-12 h-12','w-10 h-10')}</div>
+                        <h3 class="font-black text-lg text-gray-900">${profile.title}</h3>
+                    </div>
+                    <div class="plus-icon text-gray-400 flex-shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+                    </div>
                 </div>
-            </div>
-            <div id="question-container">
-                <h2 id="question-text" class="text-2xl font-bold mb-6 text-center"></h2>
-                <div id="options-container" class="grid grid-cols-1 gap-4">
-                    <!-- Las opciones se generan con JS -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Pantalla de Resultados -->
-        <div id="results-screen" class="hidden">
-            <!-- Los resultados se inyectan aquí con JS -->
-        </div>
-
-    </div>
-
-    <script>
-        const startScreen = document.getElementById('start-screen');
-        const flashcardScreen = document.getElementById('flashcard-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const resultsScreen = document.getElementById('results-screen');
-        
-        const exploreButton = document.getElementById('explore-button');
-        const startQuizButton = document.getElementById('start-quiz-button');
-        const flashcardContainer = document.getElementById('flashcard-container');
-
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const progressBar = document.getElementById('progress-bar');
-        const challengeCounter = document.getElementById('challenge-counter');
-        const diplomaLink = 'https://redipi.q10.com/';
-
-        // --- ICONOS SVG ---
-        const icons = {
-            estratega: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>`,
-            conectora: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-            impulsora: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
-            creativa: `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5C17.7 10.2 18 9 18 7.5a6 6 0 0 0-12 0c0 1.5.3 2.7 1.5 3.9.8.8 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`
-        };
-        
-        const questions = [
-            { question: "En tu barrio hay un cruce peligroso. ¿Qué es lo primero que haces?", options: [ { text: "Investigo datos sobre siniestros para presentar una propuesta formal.", type: "estratega" }, { text: "Organizo una reunión con el vecindario para escuchar ideas y unir fuerzas.", type: "conectora" }, { text: "Propongo una acción inmediata, como pintar una cebra peatonal temporal.", type: "impulsora" }, { text: "Diseño una campaña creativa en redes para visibilizar el riesgo y educar.", type: "creativa" } ] },
-            { question: "Anuncian una ciclorruta, pero excluye a una parte de la comunidad. ¿Tu reacción?", options: [ { text: "Analizo el plan técnico y la normativa para sustentar una contrapropuesta.", type: "estratega" }, { text: "Convoco a las personas excluidas para que sus voces sean escuchadas.", type: "conectora" }, { text: "Organizo un recorrido en bici por la zona para demostrar la necesidad real.", type: "impulsora" }, { text: "Creo un mapa interactivo para que la gente señale sus rutas deseadas.", type: "creativa" } ] },
-            { question: "Necesitas convencer a la junta local de invertir en seguridad vial para la niñez. ¿Tu argumento principal?", options: [ { text: "Un informe con estadísticas de riesgo y retorno de la inversión en bienestar.", type: "estratega" }, { text: "Testimonios de familias y docentes que expresen la preocupación de la comunidad.", type: "conectora" }, { text: "Un plan de acción concreto y de bajo costo para implementar en semanas.", type: "impulsora" }, { text: "Una presentación visual impactante desde la perspectiva de un niño o niña.", type: "creativa" } ] },
-            { question: "RETO DE ESTRATEGIA: Tienes una semana y un equipo pequeño para una campaña de impacto rápido. ¿Qué acción priorizas?", options: [ { text: "Realizar un sondeo rápido para identificar el punto de mayor riesgo y enfocar el esfuerzo allí.", type: "estratega" }, { text: "Organizar un 'café con la comunidad' para presentar el problema y sumar más personas.", type: "conectora" }, { text: "Lanzar una intervención táctica inmediata, como una 'cebratón' para pintar pasos peatonales.", type: "impulsora" }, { text: "Crear un video viral corto y potente para redes sociales que genere conciencia masiva.", type: "creativa" } ] },
-            { question: "Un grupo de jóvenes usa una zona peatonal para acrobacias en bici, generando tensión con personas mayores. ¿Cómo lo abordas?", options: [ { text: "Propongo horarios de uso diferenciados basados en los patrones de flujo peatonal.", type: "estratega" }, { text: "Modero una mesa de diálogo entre ambos grupos para que encuentren una solución conjunta.", type: "conectora" }, { text: "Cofundo con los jóvenes un evento de 'stunt' seguro en un parque para canalizar su energía.", type: "impulsora" }, { text: "Diseño una señalización urbana amigable que invite a la convivencia y al respeto mutuo.", type: "creativa" } ] }
-        ];
-
-        const resultsData = {
-            estratega: { title: "MENTE ESTRATEGA", subtitle: "El Poder de la Evidencia", flashcard_desc: "Analiza, planifica y argumenta con datos para crear soluciones sólidas.", description: "Tú conviertes datos en acciones que salvan vidas. Tu visión clara es la que construye caminos seguros para todas y todos.", potenciar: [ "Traduce los datos en historias que conecten emocionalmente.", "Confía en la intuición de la comunidad para complementar tus análisis.", "Crea alianzas con otros tipos de liderazgos para llevar tus planes a la acción." ], color: "indigo", icon: icons.estratega },
-            conectora: { title: "VOZ CONECTORA", subtitle: "El Poder de la Unión", flashcard_desc: "Crea puentes, une personas y construye comunidad a través de la empatía.", description: "Tú tejes redes de confianza y empatía. Tu increíble capacidad para unir a la comunidad es la fuerza que transforma el territorio.", potenciar: [ "Define objetivos claros para que la energía del grupo no se disperse.", "Busca datos y argumentos técnicos que respalden las voces de la comunidad.", "Delega tareas para que la colaboración sea aún más fuerte y efectiva." ], color: "teal", icon: icons.conectora },
-            impulsora: { title: "FUERZA IMPULSORA", subtitle: "El Poder de la Acción", flashcard_desc: "Pasa a la acción con soluciones prácticas que generan cambios tangibles y rápidos.", description: "Tu energía inagotable convierte las ideas en cambios reales y visibles. Tú demuestras que la transformación es posible, aquí y ahora.", potenciar: [ "Toma pausas para planificar y asegurar que la acción sea sostenible a largo plazo.", "Escucha activamente a la comunidad para que tus soluciones respondan a sus necesidades reales.", "Comunica tus logros para inspirar a más personas a sumarse al cambio." ], color: "amber", icon: icons.impulsora },
-            creativa: { title: "SEMILLA CREATIVA", subtitle: "El Poder de la Innovación", flashcard_desc: "Imagina soluciones que nadie más ve y comunica de formas que inspiran y movilizan.", description: "Tú imaginas soluciones que nadie más ve. Tu genialidad para inspirar y comunicar de formas nuevas es la que abre mentes y salva vidas.", potenciar: [ "Busca alianzas con perfiles más estructurados para dar viabilidad a tus ideas.", "Asegúrate de que tus propuestas creativas sean inclusivas y fáciles de entender.", "No temas fallar. Cada experimento es un aprendizaje valioso." ], color: "purple", icon: icons.creativa }
-        };
-
-        const diplomaBenefits = [
-            "<strong>Tendrás una visión global</strong> para actuar localmente, entendiendo las políticas internacionales y el Plan Nacional de Seguridad Vial.",
-            "<strong>Liderarás con inclusión</strong>, aplicando un enfoque diferencial para proteger a las personas más vulnerables en las vías.",
-            "<strong>Diseñarás infraestructura segura</strong> y propondrás cambios tangibles en tu comunidad basados en evidencia.",
-            "<strong>Aprenderás a ofrecer apoyo humano</strong> y efectivo a víctimas en los momentos más críticos.",
-            "<strong>Dominarás herramientas de gestión</strong> y fortalecimiento institucional para que tus propuestas se hagan realidad."
-        ];
-
-        let currentQuestionIndex = 0;
-        let scores = { estratega: 0, conectora: 0, impulsora: 0, creativa: 0 };
-
-        function init() {
-            exploreButton.addEventListener('click', showFlashcards);
-            startQuizButton.addEventListener('click', startQuiz);
-            buildFlashcards();
-        }
-
-        function buildFlashcards() {
-            flashcardContainer.innerHTML = '';
-            for(const type in resultsData) {
-                const data = resultsData[type];
-                const card = document.createElement('div');
-                card.classList.add('flashcard', 'p-4', 'rounded-xl', 'text-center', 'cursor-pointer', 'border-2', 'bg-white');
-                card.innerHTML = `
-                    <div class="w-10 h-10 mx-auto ${data.color === 'amber' ? 'text-amber-500' : `text-${data.color}-600`}">${data.icon}</div>
-                    <h3 class="font-bold mt-2 text-sm text-gray-800">${data.title}</h3>
-                    <div class="description text-xs text-gray-500">
-                        ${data.flashcard_desc}
-                    </div>
-                `;
-                flashcardContainer.appendChild(card);
-            }
-        }
-
-        function showFlashcards() {
-            startScreen.classList.add('hidden');
-            flashcardScreen.classList.remove('hidden');
-        }
-
-        function startQuiz() {
-            flashcardScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
-            quizScreen.classList.add('card-enter-active');
-            showQuestion();
-        }
-
-        function showQuestion() {
-            optionsContainer.innerHTML = '';
-            const qContainer = document.getElementById('question-container');
-            qContainer.classList.remove('card-enter-active');
-            void qContainer.offsetWidth;
-            qContainer.classList.add('card-enter-active');
-
-            const currentQuestion = questions[currentQuestionIndex];
-            questionText.textContent = currentQuestion.question;
-            
-            currentQuestion.options.forEach(option => {
-                const button = document.createElement('button');
-                button.innerHTML = `<div class="w-6 h-6 ansv-orange">${icons[option.type]}</div> <span class="ml-3 flex-1">${option.text}</span>`;
-                button.classList.add('w-full', 'flex', 'items-center', 'bg-white', 'hover:bg-indigo-50', 'hover:border-indigo-500', 'text-left', 'p-4', 'rounded-xl', 'transition-all', 'duration-200', 'border-2', 'border-gray-200', 'shadow-sm');
-                button.dataset.type = option.type;
-                button.addEventListener('click', selectOption);
-                optionsContainer.appendChild(button);
-            });
-            
-            updateProgressBar();
-        }
-
-        function selectOption(e) {
-            const selectedType = e.currentTarget.dataset.type;
-            scores[selectedType]++;
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                showQuestion();
-            } else {
-                showResults();
-            }
-        }
-        
-        function updateProgressBar() {
-            const progress = ((currentQuestionIndex) / questions.length) * 100;
-            progressBar.style.width = `${progress}%`;
-            challengeCounter.textContent = `Reto ${currentQuestionIndex + 1} de ${questions.length}`;
-        }
-
-        function showResults() {
-            quizScreen.classList.add('hidden');
-            let maxScore = -1;
-            let resultType = '';
-            for (const type in scores) {
-                if (scores[type] > maxScore) {
-                    maxScore = scores[type];
-                    resultType = type;
-                }
-            }
-            
-            const result = resultsData[resultType];
-            
-            const colorClasses = {
-                indigo: { gradient: 'badge-gradient-indigo', text: 'text-indigo-200', lightText: 'text-indigo-100' },
-                teal: { gradient: 'badge-gradient-teal', text: 'text-teal-200', lightText: 'text-teal-100' },
-                amber: { gradient: 'badge-gradient-amber', text: 'text-amber-200', lightText: 'text-amber-100' },
-                purple: { gradient: 'badge-gradient-purple', text: 'text-purple-200', lightText: 'text-purple-100' }
-            };
-
-            const colors = colorClasses[result.color];
-
-            resultsScreen.innerHTML = `
-                <div class="p-6 md:p-8">
-                    <div class="text-center mb-6 card-enter-active">
-                        <p class="font-bold text-gray-500">¡MISIÓN CUMPLIDA! TU INSIGNIA ES:</p>
-                    </div>
-                    
-                    <!-- Insignia Flip Card -->
-                    <div id="insignia-card" class="flip-card result-item-enter" style="--delay: 0.1s;">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front text-white ${colors.gradient}">
-                                <div class="w-24 h-24 mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                                    <div class="w-14 h-14">${result.icon}</div>
-                                </div>
-                                <h2 class="text-2xl font-bold tracking-tight">${result.title}</h2>
-                                <span class="mt-1 font-semibold ${colors.text}">${result.subtitle}</span>
-                                <div class="absolute bottom-4 text-xs font-bold opacity-70 animate-pulse">Toca para revelar tu poder</div>
-                            </div>
-                            <div class="flip-card-back">
-                                <p class="text-gray-700 font-semibold px-4">${result.description}</p>
-                                <hr class="my-4 w-1/2 border-gray-200">
-                                <h3 class="font-bold text-sm mb-2 text-gray-800">Cómo potenciarte:</h3>
-                                <ul class="space-y-1 text-gray-600 text-xs text-left px-4">
-                                    ${result.potenciar.map(item => `<li class="flex"><svg class="w-4 h-4 mr-2 mt-0.5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${item}</span></li>`).join('')}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 bg-indigo-50 p-6 rounded-xl border border-indigo-200 result-item-enter" style="--delay: 0.3s;">
-                        <h3 class="font-black text-xl mb-4 text-center result-title-gradient">✨ Desbloquea tu Poder en el Diplomado ✨</h3>
-                        <ul class="space-y-3 text-gray-700">
-                            ${diplomaBenefits.map(item => `<li class="flex items-start"><svg class="w-6 h-6 mr-2 text-indigo-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zM12 14a4 4 0 100-8 4 4 0 000 8zm-2 0a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg><span>${item}</span></li>`).join('')}
-                        </ul>
-                    </div>
-                    
-                    <div class="mt-8 text-center bg-white p-6 rounded-xl result-item-enter" style="--delay: 0.5s;">
-                        <p class="text-xl font-bold text-gray-800">Tu liderazgo es justo lo que tu territorio necesita.</p>
-                        <p class="mt-2 text-gray-600">Ya diste el primer paso al inscribirte, ¡ahora da el siguiente! Tienes hasta <strong>noviembre</strong> para completar este viaje a tu propio ritmo.</p>
-                        <a href="${diplomaLink}" target="_blank" class="mt-6 w-full inline-block bg-ansv-orange hover:bg-ansv-orange-dark text-white font-black py-4 px-6 rounded-xl text-lg transition-transform transform hover:scale-105 shadow-lg">
-                            ¡POTENCIAR MI LIDERAZGO AHORA!
-                        </a>
-                    </div>
+                <div class="description text-sm text-gray-600 pr-6 pt-2">
+                    <p>${profile.desc}</p>
                 </div>
             `;
-            resultsScreen.classList.remove('hidden');
+            card.addEventListener('click', () => card.classList.toggle('is-open'));
+            flashcardContainer.appendChild(card);
+        });
+    }
 
-            const insigniaCard = document.getElementById('insignia-card');
-            if(insigniaCard) {
-                insigniaCard.addEventListener('click', () => {
-                    insigniaCard.classList.toggle('is-flipped');
-                });
-            }
-        }
+    function showFlashcards() {
+        startScreen.classList.add('hidden');
+        flashcardScreen.classList.remove('hidden');
+        flashcardScreen.classList.add('anim');
+    }
 
-        init();
-    </script>
+    function startQuiz() {
+        flashcardScreen.classList.add('hidden');
+        quizScreen.classList.remove('hidden');
+        renderQuestion();
+    }
+
+    function renderQuestion(){
+      const q = questions[idx];
+      const pct = (idx/questions.length)*100;
+      progressBar.style.width = pct+"%";
+      challengeCounter.textContent = `Reto ${idx+1} de ${questions.length}`;
+      questionText.textContent = q.q;
+      optionsContainer.innerHTML = '';
+      $('#question-container').classList.remove('anim');
+      void $('#question-container').offsetWidth; // Trigger reflow
+      $('#question-container').classList.add('anim');
+
+
+      q.a.forEach(({t,k})=>{
+        const btn = document.createElement('button');
+        btn.type='button';
+        btn.className='w-full flex items-start gap-3 bg-white hover:bg-indigo-50 hover:border-indigo-500 text-left p-4 rounded-xl transition border-2 border-gray-200 shadow-sm focus-visible:ring-2 ring-ansv';
+        btn.setAttribute('role','option');
+        btn.setAttribute('aria-label', t);
+        btn.dataset.key=k;
+        btn.innerHTML = `<span class="text-ansv mt-1">${icons[k].replace('w-12 h-12','w-6 h-6')}</span><span class="flex-1">${t}</span>`;
+        btn.addEventListener('click', onAnswer);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function onAnswer(e){
+      const k = e.currentTarget.dataset.key;
+      score[k]++;
+      idx++;
+      if(idx < questions.length){
+        renderQuestion();
+      }else{
+        showResults();
+      }
+    }
+
+    function showResults(){
+      quizScreen.classList.add('hidden');
+
+      const entries = Object.entries(score).sort((a,b)=>b[1]-a[1]);
+      const mainKey = entries[0][0];
+      const main = profiles[mainKey];
+
+      const palette = {
+        indigo:{ front: 'badge-gradient-indigo text-indigo-100', back: 'text-indigo-600' },
+        teal:{ front: 'badge-gradient-teal text-teal-100', back: 'text-teal-600' },
+        amber:{ front: 'badge-gradient-amber text-amber-100', back: 'text-amber-600' },
+        purple:{ front: 'badge-gradient-purple text-purple-100', back: 'text-purple-600' }
+      }[main.color];
+
+      const tips = main.tips.map(x=>`<li class="flex items-start"><svg class="w-5 h-5 mr-2 mt-0.5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${x}</span></li>`).join('');
+
+      resultsScreen.innerHTML = `
+      <div class="p-6 sm:p-8 anim">
+        <div class="text-center mb-6">
+          <p class="font-bold text-gray-500">¡MISIÓN CUMPLIDA! TU INSIGNIA ES:</p>
+        </div>
+        
+        <div class="flex justify-center my-6">
+            <div id="insignia-card" class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front text-white ${palette.front}">
+                        <div class="w-24 h-24 mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">${icons[mainKey]}</div>
+                        <h2 class="text-3xl font-black tracking-tight">${main.title}</h2>
+                        <p class="mt-4 max-w-xs text-center">${main.desc}</p>
+                        <div class="absolute bottom-6 text-xs font-bold opacity-75 animate-pulse">Toca para revelar tus súper poderes</div>
+                    </div>
+                    <div class="flip-card-back">
+                        <h3 class="font-black text-xl mb-3 ${palette.back}">Cómo potenciar tu liderazgo</h3>
+                        <ul class="space-y-2 text-gray-700 text-sm">${tips}</ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-200">
+          <h3 class="font-black text-xl mb-4 text-center bg-gradient-to-r from-indigo-600 to-fuchsia-600 bg-clip-text text-transparent">✨ Desbloquea tu poder en el Diplomado ✨</h3>
+          <ul class="space-y-3 text-gray-700">
+            <li class="flex items-start"><svg class="w-6 h-6 mr-2 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zM12 14a4 4 0 100-8 4 4 0 000 8zm-2 0a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg><span><strong>Visión global</strong> para actuar localmente con el PNSV.</span></li>
+            <li class="flex items-start"><svg class="w-6 h-6 mr-2 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h2.5a2 2 0 011.6.8l1.5 2a2 2 0 001.6.8H16a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"></path></svg><span><strong>Liderazgo inclusivo</strong> con enfoque diferencial.</span></li>
+            <li class="flex items-start"><svg class="w-6 h-6 mr-2 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h6a2 2 0 002-2V5a2 2 0 00-2-2H4zM14 7h2a2 2 0 012 2v6a2 2 0 01-2 2h-2"></path></svg><span><strong>Infraestructura segura</strong> basada en evidencia.</span></li>
+          </ul>
+        </div>
+
+        <div class="mt-8 text-center bg-white p-6 rounded-2xl border border-gray-100">
+          <p class="text-xl font-bold text-gray-900">Tu liderazgo es justo lo que tu territorio necesita.</p>
+          <a href="${diplomaLink}" target="_blank" rel="noopener" class="mt-6 inline-block w-full bg-ansv hover:bg-ansv-dark text-white font-black py-4 px-6 rounded-xl text-lg transition active:scale-[.99]">¡Potenciar mi liderazgo ahora!</a>
+          <p class="mt-4 text-gray-600 text-sm">Recuerda que tienes hasta <strong>noviembre</strong> para completar este viaje a tu ritmo.</p>
+          <button id="restart" class="mt-4 inline-block w-full border-2 border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-xl">Volver a jugar</button>
+        </div>
+      </div>`;
+
+      $('#results-screen').classList.remove('hidden');
+      $('#insignia-card').addEventListener('click', (e) => e.currentTarget.classList.toggle('is-flipped'));
+      $('#restart').addEventListener('click', () => {
+          idx = 0;
+          score = { estratega:0, conectora:0, impulsora:0, creativa:0 };
+          resultsScreen.classList.add('hidden');
+          startScreen.classList.remove('hidden');
+          startScreen.classList.add('anim');
+      });
+    }
+
+    init();
+  </script>
 </body>
 </html>
