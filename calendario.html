@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="es">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voces Que Salvan - Eventos de Cierre</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffffff 0%, #fff5f0 100%);
+      min-height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.1);
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 200px;
+      height: auto;
+      margin: 0 auto 20px auto;
+      display: block;
+    }
+
+    .calendar-title {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #ff6b00;
+      margin: 20px 0 10px 0;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 4px rgba(255, 107, 0, 0.2);
+      background: linear-gradient(135deg, #ff6b00, #ff8533);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .main-title {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #ff6b00;
+      margin: 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 1.3em;
+      color: #333;
+      margin: 10px 0;
+      line-height: 1.4;
+    }
+
+    .contract-info {
+      font-size: 1em;
+      color: #666;
+      margin-top: 15px;
+      font-style: italic;
+    }
+
+    .calendar-container {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.1);
+      overflow-x: auto;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: 100px repeat(5, 1fr);
+      gap: 2px;
+      background: #ff6b00;
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 900px;
+    }
+
+    .calendar-header {
+      background: #ff6b00;
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.1em;
+    }
+
+    .time-cell {
+      background: #fff5f0;
+      padding: 15px;
+      font-weight: bold;
+      text-align: center;
+      color: #ff6b00;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .event-cell {
+      background: white;
+      padding: 10px;
+      min-height: 80px;
+      cursor: default;
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .event-cell.empty {
+      background: #f9f9f9;
+      cursor: default;
+    }
+
+    .event-item {
+      background: #fff5f0;
+      border: 2px solid #ff6b00;
+      border-radius: 8px;
+      padding: 8px;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .event-item:hover {
+      background: #ff6b00;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+    }
+
+    .event-number {
+      font-weight: bold;
+      color: #ff6b00;
+      font-size: 0.8em;
+      margin-bottom: 2px;
+    }
+
+    .event-item:hover .event-number {
+      color: white;
+    }
+
+    .municipality-name {
+      font-weight: bold;
+      color: #333;
+      font-size: 0.85em;
+      line-height: 1.2;
+    }
+
+    .event-item:hover .municipality-name {
+      color: white;
+    }
+
+    .meet-link {
+      font-size: 0.75em;
+      color: #ff6b00;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 2px 6px;
+      background: white;
+      border-radius: 4px;
+      margin-top: 2px;
+    }
+
+    .event-item:hover .meet-link {
+      background: rgba(255, 255, 255, 0.9);
+      color: #ff6b00;
+    }
+
+    .event-item:hover .details-link {
+      background: rgba(255, 255, 255, 0.9) !important;
+      color: #ff6b00 !important;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 10px 40px rgba(255, 107, 0, 0.3);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #ff6b00;
+      color: white;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: #e55d00;
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      font-size: 2em;
+      color: #ff6b00;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .modal-info {
+      margin: 15px 0;
+      font-size: 1.1em;
+      color: #333;
+    }
+
+    .modal-label {
+      font-weight: bold;
+      color: #ff6b00;
+      display: inline-block;
+      min-width: 120px;
+    }
+
+    .join-btn {
+      background: #ff6b00;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 25px;
+      width: 100%;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .join-btn:hover {
+      background: #e55d00;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 107, 0, 0.4);
+    }
+
+    .instructions-container {
+      margin-bottom: 30px;
+    }
+
+    .instructions-box {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.1);
+      border: 2px solid #fff5f0;
+    }
+
+    .instructions-title {
+      font-weight: bold;
+      color: #ff6b00;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+      text-align: center;
+    }
+
+    .instructions-text {
+      color: #333;
+      font-size: 1em;
+      line-height: 1.5;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .footer-container {
+      margin-top: 30px;
+    }
+
+    .inspirational-quote {
+      padding: 15px;
+      background: linear-gradient(135deg, #ff6b00, #ff8533);
+      border-radius: 10px;
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .inspirational-quote p {
+      margin: 0;
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+
+    .operator-info {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(255, 107, 0, 0.1);
+      border: 2px solid #fff5f0;
+    }
+
+    .operator-info p {
+      margin: 8px 0;
+      color: #333;
+      font-size: 1em;
+    }
+
+    .operator-info strong {
+      color: #ff6b00;
+      font-size: 1.1em;
+    }
+
+    .ansv-link {
+      color: #ff6b00;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .ansv-link:hover {
+      color: #e55d00;
+      text-decoration: underline;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .project-card {
+      perspective: 1000px;
+      height: 120px;
+    }
+
+    .project-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .project-card.flipped .project-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .project-card-front, .project-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(255, 107, 0, 0.2);
+    }
+
+    .project-card-front {
+      background: linear-gradient(135deg, #ff6b00, #ff8533);
+      color: white;
+    }
+
+    .project-card-back {
+      background: #ffffff;
+      color: #2c2c2c;
+      transform: rotateY(180deg);
+      border: 2px solid #ff6b00;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .project-name {
+      font-weight: bold;
+      font-size: 0.95em;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .project-leader {
+      font-weight: bold;
+      color: #ff6b00;
+      font-size: 0.9em;
+      text-align: center;
+    }
+
+    .project-municipality {
+      color: #555;
+      font-size: 0.85em;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .main-title {
+        font-size: 1.8em;
+      }
+
+      .subtitle {
+        font-size: 1.1em;
+      }
+
+      .calendar-container {
+        padding: 15px;
+      }
+
+      .modal-content {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="container">
+   <div class="header"><img src="https://imgur.com/jrW2403.png" alt="Logo ANSV" class="logo" onerror="this.style.display='none';">
+    <h1 class="calendar-title">📅 Calendario de los Eventos de Cierre</h1>
+    <div class="diplomado-info">
+     <h2 class="main-title" id="mainTitle">Diplomado VOCES QUE SALVAN:</h2>
+     <p class="subtitle" id="subtitle">Liderazgos territoriales para una movilidad segura con enfoque de género</p>
+     <p class="contract-info" id="contractInfo">Contrato 022 de 2025</p>
+    </div>
+   </div>
+   <div class="instructions-container">
+    <div class="instructions-box">
+     <div class="instructions-title">
+      📅 Instrucciones
+     </div>
+     <div class="instructions-text">
+      Haz clic en cada municipio para ver los detalles del evento y acceder al enlace de conexión. Los municipios marcados con "+" incluyen participantes invitados de otros territorios.
+     </div>
+    </div>
+   </div>
+   <div class="calendar-container">
+    <div class="calendar-grid" id="calendarGrid"><!-- Calendar will be generated by JavaScript -->
+    </div>
+   </div>
+   <div class="footer-container">
+    <div class="inspirational-quote">
+     <p>💫 "Cada voz cuenta, cada acción salva vidas. Juntos y juntas transformamos la movilidad de Colombia."</p>
+    </div>
+    <div class="operator-info">
+     <p><strong>Operador REDIPI</strong></p>
+     <p>Más información: <a href="https://ansv.gov.co" target="_blank" rel="noopener noreferrer" class="ansv-link">ansv.gov.co</a></p>
+    </div>
+   </div>
+  </div>
+  <div class="modal" id="eventModal">
+   <div class="modal-content"><button class="close-btn" id="closeModal">×</button>
+    <h2 class="modal-title" id="modalMunicipality"></h2>
+    <div class="modal-info"><span class="modal-label">📅 Fecha:</span> <span id="modalDate"></span>
+    </div>
+    <div class="modal-info"><span class="modal-label">🕐 Hora:</span> <span id="modalTime"></span>
+    </div>
+    <div class="modal-info" id="modalAllMunicipalities"><span class="modal-label">🏛️ Municipios:</span>
+     <div id="allMunicipalitiesList" style="margin-top: 8px; color: #666; font-size: 1em;"></div>
+    </div>
+    <div class="modal-info" id="modalProjects" style="display: none;"><span class="modal-label">📋 Proyectos:</span>
+     <div id="projectsList" style="margin-top: 10px;"></div>
+    </div>
+    <div style="display: flex; gap: 10px; margin-top: 25px;"><a class="join-btn" id="modalLink" href="#" target="_blank" rel="noopener noreferrer" style="width: 100%; margin-top: 0;"> 🎥 Unirse al Meet </a>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      main_title: "Diplomado VOCES QUE SALVAN:",
+      subtitle: "Liderazgos territoriales para una movilidad segura con enfoque de género",
+      contract_info: "Contrato 022 de 2025 suscrito con la ANSV",
+      primary_color: "#ff6b00",
+      background_color: "#ffffff",
+      surface_color: "#fff5f0",
+      text_color: "#333333",
+      secondary_action_color: "#e55d00"
+    };
+
+    const events = [
+      { 
+        eventNumber: 1, 
+        time: "8:00 am", 
+        municipality: "Cali", 
+        date: "Lunes 10 de Noviembre", 
+        responsible: "NEO", 
+        link: "https://meet.google.com/qfi-kqmq-mfj", 
+        day: 0,
+        projects: [
+          { leader: "Giovani Andrey Lopez Jimenez", project: "Yo genero cambio", municipality: "Cali" },
+          { leader: "Yoli Beatriz González Estacio", project: "Juventud viva, calles seguras: prevención del wireo en Cali", municipality: "Cali" },
+          { leader: "Luis Octavio Solarte Pino", project: "Salvando vidas: por una Colombia con visión cero, libre de víctimas por siniestros viales", municipality: "Cali" },
+          { leader: "Wilson Orlando Pinilla Villarraga", project: "El puente es vida – Uso de puentes peatonales", municipality: "Cali" }
+        ]
+      },
+      { 
+        eventNumber: 2, 
+        time: "10:00 am", 
+        municipality: "Palmira", 
+        date: "Lunes 10 de Noviembre", 
+        responsible: "NEO", 
+        link: "https://meet.google.com/gtx-figw-crr", 
+        day: 0,
+        projects: [
+          { leader: "Wladimir Egea Garzón", project: "Recta por la vida – intervención integral vial", municipality: "Palmira" },
+          { leader: "Maryury Cardona Posada", project: "Zonas escolares vivas", municipality: "Palmira" }
+        ]
+      },
+      { 
+        eventNumber: 3, 
+        time: "2:00 pm", 
+        municipality: "Barranquilla", 
+        date: "Lunes 10 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/vwg-uzkj-bpm", 
+        day: 0,
+        projects: [
+          { leader: "José Jaime Mendoza Mendoza", project: "Diseño y creación de la app RUTASS (Red de Usuarias y Usuarios de Tránsito Amigable y Seguro)", municipality: "Barranquilla" },
+          { leader: "Jhon Alexander Caro Hurtado", project: "Caminos de vida, libres y seguros", municipality: "Roldanillo" }
+        ]
+      },
+      { 
+        eventNumber: 4, 
+        time: "4:00 pm", 
+        municipality: "Cartagena", 
+        date: "Lunes 10 de Noviembre", 
+        responsible: "July Muñoz", 
+        link: "https://meet.google.com/yfq-syox-ica", 
+        day: 0,
+        projects: [
+          { leader: "Martha Cecilia Rincon Martinez", project: "Niñas, niños y adolescentes, futuro de Cartagena. Seguridad en cada paso." },
+          { leader: "Olandy Esther Fuentes Saez", project: "El uso de cinturón de seguridad hace la diferencia" }
+        ]
+      },
+      { 
+        eventNumber: 5, 
+        time: "8:00 am", 
+        municipality: "Villavicencio", 
+        date: "Martes 11 de Noviembre", 
+        responsible: "NEO", 
+        link: "https://meet.google.com/bvk-tmmj-pmw", 
+        day: 1,
+        projects: [
+          { leader: "María Juliana Rozo Villareal", project: "Conduce tu ejemplo. Y-curva segura", municipality: "Arauca" },
+          { leader: "Juan David Téllez Méndez", project: "Cada paso con precaución, es un paso hacia la vida", municipality: "Villavicencio" }
+        ]
+      },
+      { 
+        eventNumber: 6, 
+        time: "3:00 pm", 
+        municipality: "Santa Marta", 
+        date: "Martes 11 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/sqo-xjqm-ykr", 
+        day: 1,
+        projects: [
+          { leader: "Anix Maria Contreras Buelvas", project: "Tu ruta segura: Movilidad consciente para toda la comunidad educativa", municipality: "La Jagua de Ibirico" },
+          { leader: "Alvaro Javier Salcedo Paternina", project: "Vías con autoridad, vidas con futuro", municipality: "Santa Marta" }
+        ]
+      },
+      { 
+        eventNumber: 7, 
+        time: "4:00 pm", 
+        municipality: "Montería", 
+        date: "Martes 11 de Noviembre", 
+        responsible: "July Muñoz", 
+        link: "https://meet.google.com/pwh-pfjn-fwc", 
+        day: 1,
+        projects: [
+          { leader: "Carlos Alberto Vargas Morales", project: "Formando verdaderas y verdaderos agentes del tránsito", municipality: "Bosconia" },
+          { leader: "Alexander Arevalo Trujillo", project: "Rueda con responsabilidad", municipality: "Montería" }
+        ]
+      },
+      { 
+        eventNumber: 8, 
+        time: "8:00 am", 
+        municipality: "Pereira", 
+        date: "Miércoles 12 de Noviembre", 
+        responsible: "NEO", 
+        link: "https://meet.google.com/dzy-pzwo-rhb", 
+        day: 2,
+        projects: [
+          { leader: "Daniel Felipe Cano Muñoz", project: "Mi primer camino seguro", municipality: "Dosquebradas" },
+          { leader: "Luz Marina Quintana Ospina", project: "Pedalea seguro: Cultura ciclista y respeto vial en Pereira", municipality: "Pereira" },
+          { leader: "Luis Fernando Espinosa", project: "Con la velocidad mejoras tu vida", municipality: "Pereira" }
+        ]
+      },
+      { 
+        eventNumber: 9, 
+        time: "8:00 am", 
+        municipality: "Bucaramanga", 
+        date: "Miércoles 12 de Noviembre", 
+        responsible: "July Muñoz", 
+        link: "https://meet.google.com/znu-zszw-uvp", 
+        day: 2,
+        projects: [
+          { leader: "Lina Sophia Cancela Corredor", project: "Investigación-acción participativa en movilidad", municipality: "Bucaramanga" },
+          { leader: "Martha Yaneth Mantilla Sánchez", project: "Movilidad inteligente, sostenible y segura.", municipality: "Bucaramanga" },
+          { leader: "Félix Antonio Páez Díaz, Deyanira Gómez Serrano", project: "Estrategia Pedagógica en pro de la Movilidad segura: Construyendo Cultura Vial en Nuestra Comunidad Educativa", municipality: "Bucaramanga" },
+          { leader: "Yenny Paola Larrota Jaimes", project: "Empresas que Salvan Vidas: La Ruta Segura de Bucaramanga", municipality: "Bucaramanga" }
+        ]
+      },
+      { 
+        eventNumber: 10, 
+        time: "10:00 am", 
+        municipality: "Ibagué", 
+        date: "Miércoles 12 de Noviembre", 
+        responsible: "July Muñoz", 
+        link: "https://meet.google.com/fsg-ficb-txb", 
+        day: 2,
+        projects: [
+          { leader: "Leidy Ximena Baracaldo Sanchez", project: "Viaje de vida: Control inteligente" },
+          { leader: "Ruben Dario Rodriguez Forero", project: "Por la vida, transita con precaución por la vía" }
+        ]
+      },
+      { 
+        eventNumber: 11, 
+        time: "2:00 pm", 
+        municipality: "Valledupar", 
+        date: "Miércoles 12 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/yim-skkf-ktu", 
+        day: 2,
+        projects: [
+          { leader: "Ronald José Peralta Gómez", project: "Cada ruta cuenta", municipality: "Valledupar" },
+          { leader: "Ingri Dayana Otalora Hernández", project: "Con ellas en la vía", municipality: "Fusagasugá" }
+        ]
+      },
+      { 
+        eventNumber: 12, 
+        time: "4:00 pm", 
+        municipality: "Soacha", 
+        date: "Miércoles 12 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/pzz-bnot-mbt", 
+        day: 2,
+        projects: [
+          { leader: "Daniel Ferney Labrador Gutiérrez", project: "Zonas seguras para peatones/as en Hacienda Los Sauces", municipality: "Madrid" },
+          { leader: "Fany Yasmín Ruiz Perilla", project: "Recuperación de andenes para la seguridad vial de peatones/as", municipality: "Soacha" },
+          { leader: "Lucero Robayo López", project: "Hilo de la responsabilidad: conducción consciente", municipality: "Soacha" }
+        ]
+      },
+      { 
+        eventNumber: 13, 
+        time: "8:00 am", 
+        municipality: "Neiva", 
+        date: "Jueves 13 de Noviembre", 
+        responsible: "NEO", 
+        link: "https://meet.google.com/xam-rdgj-ggt", 
+        day: 3,
+        projects: [
+          { leader: "Harold De Jesus Alvarez De Los Reyes", project: "Conduzco seguro, vivo seguro", municipality: "Neiva" },
+          { leader: "Robinson Gómez Ospina", project: "Entrega segura, repartidores responsables", municipality: "Neiva" }
+        ]
+      },
+      { 
+        eventNumber: 14, 
+        time: "8:00 am", 
+        municipality: "Pasto", 
+        date: "Jueves 13 de Noviembre", 
+        responsible: "July Muñoz", 
+        link: "https://meet.google.com/ezd-ihff-kbb", 
+        day: 3,
+        projects: [
+          { leader: "Kevin Stiven Castro", project: "Pasos que Cuidan", municipality: "Pasto" }
+        ]
+      },
+      { 
+        eventNumber: 15, 
+        time: "10:00 am", 
+        municipality: "San Andrés de Tumaco", 
+        date: "Jueves 13 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/bbr-ghkx-ksu", 
+        day: 3,
+        projects: [
+          { leader: "Berlinton Francisco Cuesta Salas", project: "Movilidad sostenible e inclusiva para el Río Atrato", municipality: "Quibdó" },
+          { leader: "Marisela Marroquín", project: "Rutas de paz y vida: Jóvenes por la movilidad segura en Tumaco", municipality: "Tumaco" },
+          { leader: "Luz Tenni Jaime Mejia", project: "Camino Tumaco, seguridad en movimiento", municipality: "Tumaco" }
+        ]
+      },
+      { 
+        eventNumber: 16, 
+        time: "2:00 pm", 
+        municipality: "Armenia", 
+        date: "Jueves 13 de Noviembre", 
+        responsible: "July Muñoz", 
+        link: "https://meet.google.com/prc-kybp-pjq", 
+        day: 3,
+        projects: [
+          { leader: "Cherlon Didieson Perea Asprilla", project: "Conduce con sentido colectivo", municipality: "Armenia" },
+          { leader: "Mateo Cardona Navarro", project: "Transformando residuos, protegiendo vidas: Vías seguras para la ciudadanía", municipality: "Gómez Plata" }
+        ]
+      },
+      { 
+        eventNumber: 17, 
+        time: "3:00 pm", 
+        municipality: "Popayán", 
+        date: "Jueves 13 de Noviembre", 
+        responsible: "NEO", 
+        link: "https://meet.google.com/ndv-dpam-qun", 
+        day: 3,
+        projects: [
+          { leader: "Vilmer Bojorge Mosquera", project: "Bici bus Popayán", municipality: "Popayán" },
+          { leader: "Yuli Andrea Hinestroza Cortes", project: "Sin sigzagueo se conduce y vive mejor", municipality: "Popayán" },
+          { leader: "Edilma Consuelo Cortes Ramirez", project: "Hico vial", municipality: "Popayán" }
+        ]
+      },
+      { 
+        eventNumber: 18, 
+        time: "8:00 am", 
+        municipality: "Mocoa", 
+        date: "Viernes 14 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/yoj-dugy-xzx", 
+        day: 4,
+        projects: [
+          { leader: "German Roberto Ortiz", project: "Conducción segura en territorio de montaña", municipality: "Mocoa" },
+          { leader: "Sandra Patricia Caicedo Calderón, Andrés Felipe Amaya y Julio Elver Herrera Sastoque", project: "Formando cultura vial desde la infancia y fortaleciendo la transparencia en los entes de apoyo y control", municipality: "Ubaté" }
+        ]
+      },
+      { 
+        eventNumber: 19, 
+        time: "8:00 am", 
+        municipality: "Medellín", 
+        date: "Viernes 14 de Noviembre", 
+        responsible: "July Muñoz", 
+        link: "https://meet.google.com/xxs-rvkn-jdx", 
+        day: 4,
+        projects: [
+          { leader: "Jonathan García García", project: "SafeCross Seguridad Vial" },
+          { leader: "Jesús Daniel Ríos Cardona", project: "Conducción segura para motociclistas" },
+          { leader: "Jose Richard Blanco Vargas", project: "SUSSI: Sector Urbano Seguro Sin Incidentes viales severos" },
+          { leader: "Johan Alexis Montoya González", project: "Tu vida, infinitas historias. ¡Con casco!" },
+          { leader: "Juan Andrés Giraldo Restrepo", project: "Salvar vidas en las vías con conciencia y respeto a la vida" }
+        ]
+      },
+      { 
+        eventNumber: 20, 
+        time: "10:00 am", 
+        municipality: "Tunja", 
+        date: "Viernes 14 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/hmq-hzgx-oao", 
+        day: 4,
+        projects: [
+          { leader: "Claudia Milena Romero Villamil", project: "Plan integral de educación y seguridad vial en la Institución Educativa Técnica Agrícola Antonio Nariño", municipality: "Caldas" },
+          { leader: "María Osiris Montealegre Neira", project: "Cruces seguros e inclusivos", municipality: "Tunja" },
+          { leader: "Monica Sandoval", project: "Tunja educada y segura", municipality: "Tunja" }
+        ]
+      },
+      { 
+        eventNumber: 21, 
+        time: "2:00 pm", 
+        municipality: "Manizales", 
+        date: "Viernes 14 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/jxs-rwky-xba", 
+        day: 4,
+        projects: [
+          { leader: "Claudia Eugenia Arroyave Salazar", project: "Guardianas y guardianes del tránsito y la movilidad" },
+          { leader: "Manuel Alonso Castro", project: "Sube seguro: educación y movilidad responsable en Manizales" }
+        ]
+      },
+      { 
+        eventNumber: 22, 
+        time: "4:00 pm", 
+        municipality: "Bogotá", 
+        date: "Viernes 14 de Noviembre", 
+        responsible: "Juan Carlos", 
+        link: "https://meet.google.com/smr-trfn-udk", 
+        day: 4,
+        projects: [
+          { leader: "Daniel Pérez-Rodríguz", project: "Infraestructura vial para la micromovilidad bajo el enfoque del sistema seguro en Bogotá.", municipality: "Bogotá" },
+          { leader: "Leidy Camila Hernandez Benavides", project: "Sensibilización y cultura vial para conductoras y conductores", municipality: "Bogotá" },
+          { leader: "Jorge Eduardo Méndez, Liliana Arizala Arévalo", project: "Entornos educativos más seguros: Intervenciones ludopedagógicas en instituciones educativas", municipality: "Bogotá" },
+          { leader: "Nicolas Espinel Bustos", project: "En la vía, nos cuidamos todos y todas", municipality: "Bogotá" },
+          { leader: "Jeimmy Alexandra Galindo Guzman", project: "Tu espacio, nuestra vida: Conducción consciente.", municipality: "Bogotá" },
+          { leader: "Jesica Vásquez Betancur", project: "Caminos Seguros: Movilidad sin Riesgos en mi Barrio", municipality: "Bogotá" },
+          { leader: "Carlos Ernesto Laverde López", project: "Estudio (lo) Urbano", municipality: "Bogotá" },
+          { leader: "Ferney Manrique Espinosa Alayón", project: "Asistencias técnicas Cultura Seguridad Vial", municipality: "Bogotá" }
+        ]
+      }
+    ];
+
+    const days = ["Lunes 10", "Martes 11", "Miércoles 12", "Jueves 13", "Viernes 14"];
+    const times = ["8:00 am", "10:00 am", "2:00 pm", "3:00 pm", "4:00 pm"];
+
+    function generateCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      grid.innerHTML = '';
+
+      grid.innerHTML += '<div class="calendar-header">Hora</div>';
+      days.forEach(day => {
+        grid.innerHTML += `<div class="calendar-header">${day}</div>`;
+      });
+
+      times.forEach(time => {
+        grid.innerHTML += `<div class="time-cell">${time}</div>`;
+        
+        for (let day = 0; day < 5; day++) {
+          const eventsAtTime = events.filter(e => e.time === time && e.day === day);
+          
+          const cell = document.createElement('div');
+          cell.className = eventsAtTime.length > 0 ? 'event-cell' : 'event-cell empty';
+          
+          eventsAtTime.forEach(event => {
+            const eventItem = document.createElement('div');
+            eventItem.className = 'event-item';
+            eventItem.setAttribute('data-event-number', event.eventNumber);
+            const hasMultipleMunicipalities = event.projects && event.projects.some(p => p.municipality && p.municipality !== event.municipality);
+            
+            eventItem.innerHTML = `
+              <div class="event-number">Evento ${event.eventNumber}</div>
+              <div class="municipality-name">${event.municipality}${hasMultipleMunicipalities ? ' +' : ''}</div>
+              <a href="${event.link}" target="_blank" rel="noopener noreferrer" class="meet-link">🎥 Meet</a>
+              <div class="meet-link details-link" style="background: transparent; color: #ff6b00; cursor: pointer;">👁️ Detalles</div>
+            `;
+            
+            cell.appendChild(eventItem);
+          });
+          
+          grid.appendChild(cell);
+        }
+      });
+
+      // Agregar event listeners después de crear todos los elementos
+      document.querySelectorAll('.event-item').forEach(eventItem => {
+        eventItem.addEventListener('click', (e) => {
+          // Si se hace clic en el enlace Meet, no abrir modal
+          if (e.target.tagName === 'A' && e.target.classList.contains('meet-link') && !e.target.classList.contains('details-link')) {
+            return;
+          }
+          
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const eventNumber = parseInt(eventItem.getAttribute('data-event-number'));
+          const event = events.find(ev => ev.eventNumber === eventNumber);
+          if (event) {
+            openModal(event);
+          }
+        });
+      });
+    }
+
+    function openModal(event) {
+      document.getElementById('modalMunicipality').textContent = `Evento ${event.eventNumber} - ${event.municipality}`;
+      document.getElementById('modalDate').textContent = event.date;
+      document.getElementById('modalTime').textContent = event.time;
+      document.getElementById('modalLink').href = event.link;
+      
+      // Mostrar todos los municipios (anfitrión + invitados)
+      const allMunicipalitiesContainer = document.getElementById('modalAllMunicipalities');
+      const allMunicipalitiesList = document.getElementById('allMunicipalitiesList');
+      
+      if (event.projects && event.projects.length > 0) {
+        // Obtener todos los municipios únicos incluyendo el anfitrión
+        const allMunicipalities = [...new Set([
+          event.municipality, // Municipio anfitrión
+          ...event.projects
+            .map(p => p.municipality)
+            .filter(m => m && m !== event.municipality) // Municipios invitados
+        ])];
+        
+        allMunicipalitiesContainer.style.display = 'block';
+        allMunicipalitiesList.innerHTML = allMunicipalities
+          .map(municipality => `<span style="display: inline-block; margin: 2px 8px 2px 0; padding: 4px 8px; background: #fff5f0; border: 1px solid #ff6b00; border-radius: 12px; font-size: 0.9em;">${municipality}</span>`)
+          .join('');
+      } else {
+        // Si no hay proyectos, solo mostrar el municipio anfitrión
+        allMunicipalitiesContainer.style.display = 'block';
+        allMunicipalitiesList.innerHTML = `<span style="display: inline-block; margin: 2px 8px 2px 0; padding: 4px 8px; background: #fff5f0; border: 1px solid #ff6b00; border-radius: 12px; font-size: 0.9em;">${event.municipality}</span>`;
+      }
+      
+      const projectsContainer = document.getElementById('modalProjects');
+      const projectsList = document.getElementById('projectsList');
+      
+      if (event.projects && event.projects.length > 0) {
+        projectsContainer.style.display = 'block';
+        projectsList.innerHTML = '';
+        
+        // Crear contenedor de cuadrícula
+        const gridContainer = document.createElement('div');
+        gridContainer.className = 'projects-grid';
+        
+        event.projects.forEach((project, index) => {
+          const projectCard = document.createElement('div');
+          projectCard.className = 'project-card';
+          projectCard.innerHTML = `
+            <div class="project-card-inner">
+              <div class="project-card-front">
+                <div class="project-name">📋 ${project.project}</div>
+              </div>
+              <div class="project-card-back">
+                <div class="project-leader">👤 ${project.leader}</div>
+                ${project.municipality ? `<div class="project-municipality">🏛️ ${project.municipality}</div>` : ''}
+              </div>
+            </div>
+          `;
+          
+          projectCard.addEventListener('click', () => {
+            projectCard.classList.toggle('flipped');
+          });
+          
+          gridContainer.appendChild(projectCard);
+        });
+        
+        projectsList.appendChild(gridContainer);
+      } else {
+        projectsContainer.style.display = 'none';
+      }
+      
+      document.getElementById('eventModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('eventModal').classList.remove('active');
+    }
+
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    document.getElementById('eventModal').addEventListener('click', (e) => {
+      if (e.target.id === 'eventModal') {
+        closeModal();
+      }
+    });
+
+    async function onConfigChange(config) {
+      const primaryColor = config.primary_color || defaultConfig.primary_color;
+      const backgroundColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const secondaryActionColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+
+      document.getElementById('mainTitle').textContent = config.main_title || defaultConfig.main_title;
+      document.getElementById('subtitle').textContent = config.subtitle || defaultConfig.subtitle;
+      document.getElementById('contractInfo').textContent = config.contract_info || defaultConfig.contract_info;
+
+      document.body.style.background = `linear-gradient(135deg, ${backgroundColor} 0%, ${surfaceColor} 100%)`;
+      
+      document.querySelectorAll('.header, .calendar-container, .instructions-box, .operator-info').forEach(el => {
+        el.style.background = backgroundColor;
+      });
+
+      document.querySelectorAll('.main-title, .modal-title, .instructions-title, .time-cell, .responsible-name, .modal-label').forEach(el => {
+        el.style.color = primaryColor;
+      });
+
+      document.querySelectorAll('.calendar-header').forEach(el => {
+        el.style.background = primaryColor;
+      });
+
+      document.querySelectorAll('.time-cell').forEach(el => {
+        el.style.background = surfaceColor;
+      });
+
+      document.querySelectorAll('.instructions-box').forEach(el => {
+        el.style.borderColor = surfaceColor;
+      });
+
+      document.querySelectorAll('.join-btn, .close-btn').forEach(el => {
+        el.style.background = primaryColor;
+      });
+
+      document.querySelectorAll('.subtitle, .municipality-name, .modal-info, .instructions-text').forEach(el => {
+        el.style.color = textColor;
+      });
+
+      const style = document.createElement('style');
+      style.textContent = `
+        .event-cell:hover { background: ${surfaceColor} !important; }
+        .join-btn:hover, .close-btn:hover { background: ${secondaryActionColor} !important; }
+      `;
+      document.head.appendChild(style);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (value) => {
+                config.primary_color = value;
+                window.elementSdk.setConfig({ primary_color: value });
+              }
+            },
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (value) => {
+                config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => config.surface_color || defaultConfig.surface_color,
+              set: (value) => {
+                config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (value) => {
+                config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+              set: (value) => {
+                config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["main_title", config.main_title || defaultConfig.main_title],
+          ["subtitle", config.subtitle || defaultConfig.subtitle],
+          ["contract_info", config.contract_info || defaultConfig.contract_info]
+        ])
+      });
+    }
+
+    generateCalendar();
+    onConfigChange(defaultConfig);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99a9b054a588b6ff',t:'MTc2MjQ4NTU2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
